@@ -24,18 +24,17 @@ models = {
 def extract_api_frequencies(report):
 
     api_counts = Counter()
-    behavior = report.get("behavior", {})
+    api_sequence = report.get("api_sequence", [])
 
-    for process in behavior.get("processes", []):
-        for call in process.get("calls", []):
+    for entry in api_sequence:
+        if " -> " not in entry:
+            continue
 
-            api = call.get("api")
-
-            if api:
-                api_counts[api] += 1
+        api = entry.split(" -> ", 1)[1].strip()
+        if api:
+            api_counts[api] += 1
 
     return api_counts
-
 
 def run_prediction_models(api_counts):
     results = []
